@@ -8,27 +8,72 @@ difference is that, when the required headers are present, you'll get the respon
 back only when your transaction has reach a block or is irreversible (depending
 on value passed in header `X-Eos-Push-Guarantee`).
 
+See https://docs.dfuse.io/#rest-api-post-push_transaction
+
 ## Quick Start
+
+You are going to follow a quick guide to send tokens from one account to another
+one on the Jungle 2.0 Test Network using dfuse `push_transaction` with push guaranteed
+activated.
+
+For that, you will need an account on the Jungle 2.0 Test Network with some tokens in
+it (see https://jungletestnet.io/ `Get Started` tutorial to create an account there and
+get some coins), a dfuse API token (check https://www.dfuse.io/en#subscribe to get a free
+API token).
 
     yarn install
 
 Create a `.env` file with the following content:
 
-    export DFUSE_IO_API_KEY=<dfuse API Key Here>
-    export SIGNING_PRIVATE_KEY=5JpjqdhVCQTegTjrLtCSXHce7c9M8w7EXYZS7xC13jVFF4Phcrx
+    export DFUSE_IO_API_TOKEN=<dfuse API token here>
+    export TRANSFER_FROM_ACCOUNT=<account name that will send the token>
+    export SIGNING_PRIVATE_KEY=<account private key here>
 
-Load it in your environment:
+The `<dfuse API token here>` should be replaced with your dfuse API token,
+`<account name that will send the token>` should be replaced with the
+account name that will transfer money to someone else (`junglefaucet`) and
+`<account private key here>` should be replaced with the private key
+controlling the Jungle test net account defined in `TRANSFER_FROM_ACCOUNT`.
+
+**Note** The private key must be able to fullfilled `<from>@active` where the
+`<from>` is actually the account name specified in `TRANSFER_FROM_ACCOUNT`.
+
+Load it in your environment (or simple type the `export` commands in your
+terminal):
 
     source .env
+
+Adapt the `push-transaction.ts` script to fit your need
 
 Launch the `push-transaction.ts` script:
 
     yarn run ts-node push-transaction.ts
 
-**Note** Of course, you will need to adapt `push-transaction.ts` so the transaction
-pushed to the network make sense and can be completed correctly.
+### Mainnet/Kylin
+
+If you want to try on Mainnet or Kylin instead, you can provide the following
+extra environment variables:
+
+    export DFUSE_IO_API_URL=<https://mainnet.eos.dfuse.io OR https://kylin.eos.dfuse.io>
+    export TRANSFER_TO_ACCOUNT=<account name that will receive the token>
+    export TRANSFER_QUANTITY=<quantity to transfer, defaults to 0.0001 EOS if unset>
+
+### Other Guaranteeds
+
+It's possible to specify `PUSH_GUARANTEED` environment variable to test out
+the various values for the push guaranteed. Valid values are:
+
+- `in-block`
+- `irreversible`
+- `handoff:1`
+- `handoffs:2`
+- `handoffs:3`
+
+See https://docs.dfuse.io/#rest-api-post-push_transaction
 
 ### Headers
 
 - `Authorization: Bearer $DFUSE_API_TOKEN`
 - `X-Eos-Push-Guarantee: in-block | irreversible`
+
+### Security
