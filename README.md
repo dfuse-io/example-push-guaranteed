@@ -77,3 +77,13 @@ See https://docs.dfuse.io/#rest-api-post-push_transaction
 - `X-Eos-Push-Guarantee: in-block | irreversible`
 
 ### Security
+
+This repository use an enviornment variable via `JsSignatureProvider` to store the 
+private key for **testing** purposes. In a real production environment, always ensure 
+security of private keys.
+
+Better yet, like state directly in `eosjs` library, use a third-party signing provider:
+
+> The Signature Provider holds private keys and is responsible for signing transactions.
+
+> Using the JsSignatureProvider in the browser is not secure and should only be used for development purposes. Use a secure vault outside of the context of the webpage to ensure security when signing transactions in production
