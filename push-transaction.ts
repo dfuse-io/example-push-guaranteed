@@ -29,7 +29,6 @@ const customizedFetch = (input: string | Request, init: RequestInit): Promise<Re
   headers["Authorization"] = `Bearer ${config.dfuseApiToken}`
   headers["X-Eos-Push-Guarantee"] = config.guaranteed
 
-  console.log(input, prettyJson(init))
   return fetch(input, init)
 }
 
@@ -64,7 +63,7 @@ async function main() {
       from: config.transferFrom,
       to: config.transferTo,
       quantity: config.transferQuantity,
-      memo: ""
+      memo: `Transaction with push guaranteed '${config.guaranteed}' from dfuse (https://docs.dfuse.io/#rest-api-post-push_transaction)`
     }
   }
 
