@@ -63,18 +63,43 @@ async function main() {
       from: config.transferFrom,
       to: config.transferTo,
       quantity: config.transferQuantity,
-      memo: `Transaction with push guaranteed '${config.guaranteed}' from dfuse (https://docs.dfuse.io/#rest-api-post-push_transaction)`
+      memo: `Transaction with push guaranteed '${
+        config.guaranteed
+      }' from dfuse (https://docs.dfuse.io/#rest-api-post-push_transaction)`
     }
   }
 
   console.log("Transfer action", prettyJson(transferAction))
-  const result = await api.transact({ actions: [transferAction] }, {
+
+  const startTime = new Date()
+  const result = await api.transact(
+    { actions: [transferAction] },
+    {
       blocksBehind: 3,
       expireSeconds: 30
     }
   )
+  const endTime = new Date()
 
+  printResult(result, startTime, endTime)
+}
+
+function printResult(result: any, startTime: Date, endTime: Date) {
   console.log("Transaction push result", prettyJson(result))
+  console.log()
+
+  const elapsed = (endTime.getTime() - startTime.getTime()) / 1000.0
+  console.log(`Pushed with guarenteed '${config.guaranteed}' in '${elapsed}' seconds`)
+
+  const networkMatch = config.endpoint.match(/(mainnet|jungle|kylin).eos.dfuse.io/)
+  if (networkMatch !== null && networkMatch[1] != null) {
+    let network = networkMatch[1] + "."
+    if (network === "mainnet") {
+      network = ""
+    }
+
+    console.log(` - https://${network}eosq.app/tx/${result.transaction_id}`)
+  }
 }
 
 function prettyJson(input: any): string {
@@ -118,13 +143,12 @@ function readConfig() {
     privateKey: privateKey!,
     transferFrom: transferFrom!,
     transferTo,
-    transferQuantity,
+    transferQuantity
   }
 }
 
 main()
   .then(() => {
-    console.log("Transaction pushed.")
     process.exit(0)
   })
   .catch((error) => {

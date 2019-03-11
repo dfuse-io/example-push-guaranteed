@@ -5,8 +5,8 @@ transaction through dfuse API Push Guaranteed endpoint.
 
 The endpoint is 100% compatible with EOS push transaction endpoint. The single
 difference is that, when the required headers are present, you'll get the response
-back only when your transaction has reach a block or is irreversible (depending
-on value passed in header `X-Eos-Push-Guarantee`).
+back only when your transaction has reach a block, passed 1, 2 or 3 handoffs or is
+irreversible (depending on value passed in header `X-Eos-Push-Guarantee`).
 
 See https://docs.dfuse.io/#rest-api-post-push_transaction
 
@@ -58,28 +58,28 @@ extra environment variables:
     export TRANSFER_TO_ACCOUNT=<account name that will receive the token>
     export TRANSFER_QUANTITY=<quantity to transfer, defaults to 0.0001 EOS if unset>
 
-### Other Guaranteeds
+### Other Guaranteed Option
 
 It's possible to specify `PUSH_GUARANTEED` environment variable to test out
 the various values for the push guaranteed. Valid values are:
 
 - `in-block`
-- `irreversible`
 - `handoff:1`
 - `handoffs:2`
 - `handoffs:3`
+- `irreversible`
 
 See https://docs.dfuse.io/#rest-api-post-push_transaction
 
 ### Headers
 
 - `Authorization: Bearer $DFUSE_API_TOKEN`
-- `X-Eos-Push-Guarantee: in-block | irreversible`
+- `X-Eos-Push-Guarantee: in-block | handoff:1 | handoffs:2 | handoffs:3 | irreversible`
 
 ### Security
 
-This repository use an enviornment variable via `JsSignatureProvider` to store the 
-private key for **testing** purposes. In a real production environment, always ensure 
+This repository use an environment variable via `JsSignatureProvider` to store the
+private key for **testing** purposes. In a real production environment, always ensure
 security of private keys.
 
 Better yet, like state directly in `eosjs` library, use a third-party signing provider:
